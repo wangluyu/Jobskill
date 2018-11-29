@@ -2,7 +2,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, Integer, Text
+from config import DbConfig
 
+username = DbConfig.username
+password = DbConfig.password
+host = DbConfig.host
+database = DbConfig.database
 # 创建对象的基类:
 Base = declarative_base()
 
@@ -17,6 +22,6 @@ class positionIds(Base):
     status = Column(Integer)
 
 # 初始化数据库连接:
-engine = create_engine('mysql+mysqlconnector://tallybook:tallybook@207.246.91.225:3306/jobskill')
+engine = create_engine('mysql+mysqlconnector://'+username+':'+password+'@'+host+'/'+database)
 # 创建DBSession类型:
 DBSession = sessionmaker(bind=engine)

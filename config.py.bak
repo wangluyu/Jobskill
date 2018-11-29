@@ -1,0 +1,5 @@
+class DbConfig:
+    username = 'username'
+    password = 'password'
+    host = 'localhost:3306'
+    database = 'database'
