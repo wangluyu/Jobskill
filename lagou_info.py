@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 import pandas
 import time
 import logging
+from databass import *
 
 def get_html(id,job):
     time.sleep(10)
@@ -48,7 +49,7 @@ def parse_html(html):
                             jobDemand.append(txt)
                 else:
                     break
-            elif re.match("\w?[\.、 :：]?(任职要求|任职资格|我们希望你|任职条件|岗位要求|要求：|职位要求|工作要求|职位需求)", jobTxt):
+            elif re.match("\w?[\.、 :：【]?(任职要求|任职资格|我们希望你|任职条件|岗位要求|要求：|职位要求|工作要求|职位需求|)", jobTxt):
                 flag = True
         jobDemand = json.dumps(jobDemand)
         industryField = html.select('.c_feature')[0].find_all('li')[0].get_text()
@@ -70,16 +71,19 @@ def parse_html(html):
 
 def main():
     data = []
-    job = 'PHP'
-    ids = [5185557,5227356]
-    for id in ids:
-        print(id)
+    db = DBSession()
+    infos = db.query(positionIds).filter(positionIds.status == 0).limit(10)
+    for info in infos:
+        id = info.position_id
+        job = info.job
+        print(id,job)
         html = get_html(id,job)
         info = parse_html(html)
         data.append(info)
+    print(data)
+    db.close()
     # df = pandas.DataFrame(data = data,columns = ['薪资','城市','工作经验','学历要求','工作类型','职位要求','工作领域','发展阶段','公司规模'])
     # df.to_csv('lagou_jobs.csv',index = False)
-    print('已保存为csv文件.')
 
 if __name__== "__main__":
     main()
